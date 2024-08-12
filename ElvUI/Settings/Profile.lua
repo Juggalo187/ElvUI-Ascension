@@ -165,6 +165,7 @@ P.bags = {
 	moneyCoins = true,
 	junkIcon = false,
 	junkDesaturate = true,
+	deleteItems = {},
 	unlearnedVanityIcon = false,
 	unlearnedWardrobeIcon = false,
 	ignoredItems = {},
@@ -207,6 +208,27 @@ P.bags = {
 			questStarter = {r = 1, g = 1, b = 0},
 			questItem = {r = 1, g = 0.30, b = 0.30}
 		}
+	},
+	vendorGrays = {
+		enable = false,
+		interval = 0.2,
+		details = false,
+		progressBar = true
+	},
+	vendorGreens = {
+		enable = false,
+		details = false,
+		interval = 0.2,
+		progressBar = true,
+		sellsoubound = false,
+		sellvalueabove = 1,
+		sellvaluebelow = 1
+	},
+	deleteGrays = {
+		enable = false,
+		junkList = false,
+		details = false,
+		deletevalue = 1
 	},
 	split = {
 		bagSpacing = 5,

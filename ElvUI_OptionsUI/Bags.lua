@@ -483,8 +483,168 @@ E.Options.args.bags = {
 				}
 			}
 		},
-		bagBar = {
+		deleteGrays = {
 			order = 6,
+			type = "group",
+			name = L["Auto Delete Items"],
+			get = function(info) return E.db.bags.deleteGrays[info[#info]] end,
+			set = function(info, value) E.db.bags.deleteGrays[info[#info]] = value B:UpdateDeleteGraySettings() end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Delete Junk"],
+					desc = L["Automatically delete Junk when looting."]
+				},
+				junkList = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Delete List"],
+					desc = L["Automatically delete items in list."]
+				},
+				details = {
+					order = 2,
+					type = "toggle",
+					name = L["Chat Output"],
+					desc = L["Displays item that was deleted in chat."]
+				},
+				deletevalue = {
+							order = 3,
+							name = L["Grey/Junk Item Value (Copper)"],
+							type = "range",
+							min = 1, max = 1000000, step = 1,
+							desc = L["If sell price of the item is less than this it will be deleted."]
+						},
+				Test = {
+					order = 4,
+					type = "execute",
+					name = L["Check Value"],
+					customWidth = 100,
+					desc = L["Check Value of the copper ammount you set."],
+					func = function() B:Skulychatoutput() end
+				},
+				spacer = {
+					order = 5,
+					type = "description",
+					name = " "
+				},
+				description = {
+					order = 6,
+					type = "description",
+					name = L["Here you can add items that you want to be automatically deleted. To remove an item just click on its name in the list."]
+				},
+				adddeleteEntryGroup = {
+					order = 7,
+					type = "group",
+					name = L["Add Item by Name,ID or Drag/Drop"],
+					guiInline = true,
+					args = {
+						adddeleteEntryProfile = {
+							order = 1,
+							type = "input",
+							name = L["Enter Id or Drag-n-Drop"],
+							desc = L["Add an item to the delete list."],
+							get = function(info) return "" end,
+							set = function(info, value)
+								if value == "" or gsub(value, "%s+", "") == "" then return end --Don't allow empty entries
+								--Store by itemID if possible
+									local itemID = 0
+									local islink = match(value, "item:(%d+)")
+									local isnumber = tonumber(value)
+									local valueID = 0
+									local iname = ""
+									
+									if isnumber then
+												valueID = value
+												iname = select(1, GetItemInfo(valueID))
+									elseif islink then
+												valueID = B:ConvertLinkToID(value)
+												iname = select(1, GetItemInfo(valueID))
+										else
+											for k,v in pairs(Skulyitemcache) do
+												if string.lower(value) == string.lower(v) then
+														valueID = tonumber(k)
+														iname = select(1, GetItemInfo(tonumber(k)))
+												end
+											end
+									end
+											
+											itemID = tonumber(valueID)
+											local itemlink = select(2, GetItemInfo(itemID))
+											local itemname = select(1, GetItemInfo(itemID))
+											
+											if itemlink then
+												E:Print(itemlink.."|CFF35948E added to your delete list.|r")
+											else
+												E:Print("You entered [|CFFD4B961"..string.upper(value).."|r], please make sure that is the correct Item Name or ID.")
+											end
+											
+											E.db.bags.deleteItems[tonumber(itemID)] = itemname
+											B:UpdateListAdd(itemID)
+							end
+						},
+					}
+				},
+				adddeleteEntriesProfile = {
+					order = 8,
+					type = "multiselect",
+					name = L["Items to Delete"],
+					width = "normal",
+					values = function() return E.db.bags.deleteItems end,
+					get = function(info, value)	return E.db.bags.deleteItems[value] end,
+					set = function(info, value)
+						E.db.bags.deleteItems[value] = nil B:UpdateListRemove(value)
+						GameTooltip:Hide() --Make sure tooltip is properly hidden
+					end
+				}
+						
+			}
+		},
+		vendorGreens = {
+			order = 7,
+			type = "group",
+			name = L["Vendor Greens"],
+			get = function(info) return E.db.bags.vendorGreens[info[#info]] end,
+			set = function(info, value) E.db.bags.vendorGreens[info[#info]] = value B:UpdateGreensSellFrameSettings() end,
+			args = {
+				enable = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Sell Armor/Weapons"],
+					desc = L["Automatically vendor green items when visiting a vendor."]
+				},
+				details = {
+					order = 2,
+					type = "toggle",
+					name = L["Detailed Report"],
+					desc = L["Displays a detailed report of every item sold when enabled."]
+				},
+				progressBar = {
+					order = 3,
+					type = "toggle",
+					name = L["Progress Bar"]
+				},
+				sellsoubound = {
+					order = 4,
+					type = "toggle",
+					name = L["Include Soulbound"],
+				},
+				sellvalueabove = {
+							order = 5,
+							name = L["Sell Price Above (Gold)"],
+							type = "range",
+							min = 1, max = 30, step = 1
+				},
+				sellvaluebelow = {
+							order = 6,
+							name = L["Sell Price Below (Gold)"],
+							type = "range",
+							min = 1, max = 30, step = 1
+						}
+			}
+		},
+		bagBar = {
+			order = 8,
 			type = "group",
 			name = L["Bag-Bar"],
 			get = function(info) return E.db.bags.bagBar[info[#info]] end,
@@ -581,7 +741,7 @@ E.Options.args.bags = {
 			}
 		},
 		split = {
-			order = 7,
+			order = 9,
 			type = "group",
 			name = L["Split"],
 			get = function(info) return E.db.bags.split[info[#info]] end,
@@ -691,7 +851,7 @@ E.Options.args.bags = {
 			}
 		},
 		bagSortingGroup = {
-			order = 9,
+			order = 10,
 			type = "group",
 			name = L["Bag Sorting"],
 			disabled = function() return not E.Bags.Initialized end,
@@ -700,6 +860,12 @@ E.Options.args.bags = {
 					order = 1,
 					type = "header",
 					name = L["Bag Sorting"]
+				},
+				autosort = {
+					order = 1,
+					type = "toggle",
+					name = L["Auto Sort"],
+					desc = L["Automatically sort when closing bags."]
 				},
 				sortInverted = {
 					order = 2,
@@ -786,7 +952,7 @@ E.Options.args.bags = {
 			}
 		},
 		search_syntax = {
-			order = 10,
+			order = 11,
 			type = "group",
 			name = L["Search Syntax"],
 			disabled = function() return not E.Bags.Initialized end,

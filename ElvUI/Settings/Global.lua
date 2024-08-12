@@ -482,6 +482,8 @@ G.profileCopy = {
 	bags = {
 		general = true,
 		split = true,
+		vendorGrays = true,
+		vendorGreens = true,
 		bagBar = true,
 		cooldown = true
 	},

@@ -2908,12 +2908,15 @@ end
 
 function Skulydeleteditemsvalue()
 local deleteditemsvalue = 0
+local count = 0
+
 	if B.deletevaluetbl ~= nil then
 		for k,v in pairs(B.deletevaluetbl) do
 			deleteditemsvalue = deleteditemsvalue + v
 		end
+		count = table.getn(B.deletevaluetbl)
 	end
-	if deleteditemsvalue > 0 then
+	if count > 1 and deleteditemsvalue > 1 then
 	DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted items total = |r"..GetCoinTextureString(deleteditemsvalue))
 	B.deletevaluetbl = {}
 	end

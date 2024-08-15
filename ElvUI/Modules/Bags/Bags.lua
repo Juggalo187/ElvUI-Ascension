@@ -2916,10 +2916,10 @@ local count = 0
 		end
 		count = table.getn(B.deletevaluetbl)
 	end
-	if count > 1 and deleteditemsvalue > 1 then
+	if count > 1 and deleteditemsvalue > 0 then
 	DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted items total = |r"..GetCoinTextureString(deleteditemsvalue))
-	B.deletevaluetbl = {}
 	end
+	B.deletevaluetbl = {}
 end
 
 

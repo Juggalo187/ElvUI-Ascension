@@ -574,12 +574,17 @@ E.Options.args.bags = {
 											local itemname = select(1, GetItemInfo(itemID))
 											
 											if itemlink then
-												E:Print(itemlink.."|CFF35948E added to your delete list.|r")
+												if itemname == E.db.bags.deleteItems[tonumber(itemID)] then
+													E:Print(itemlink.."|CFF35948E is already in your delete list.|r")
+												else
+													E.db.bags.deleteItems[tonumber(itemID)] = itemname
+													E:Print(itemlink.."|CFF35948E added to your delete list.|r")
+												end
+												
 											else
 												E:Print("You entered [|CFFD4B961"..string.upper(value).."|r], please make sure that is the correct Item Name or ID.")
 											end
 											
-											E.db.bags.deleteItems[tonumber(itemID)] = itemname
 											B:UpdateListAdd(itemID)
 							end
 						},

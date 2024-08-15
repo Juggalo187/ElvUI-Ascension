@@ -2913,7 +2913,7 @@ local deleteditemsvalue = 0
 			deleteditemsvalue = deleteditemsvalue + v
 		end
 	end
-	if deleteditemsvalue > 0 then
+	if deleteditemsvalue > 1 then
 	DEFAULT_CHAT_FRAME:AddMessage("|cFF00DDDD Deleted items total = |r"..GetCoinTextureString(deleteditemsvalue))
 	B.deletevaluetbl = {}
 	end
